@@ -7,4 +7,6 @@ Square::Square()
         w = true;
     }
 
+    visited = 0;
+
 }
