@@ -77,6 +77,8 @@ int main()
                 break;
         }
 
+        //This whole thing needs to be in a while loop or seomthing. If an adjacent cell is already visited, we need to pick another. Only back up
+        //if all adjacent cells have been visited
         if(!maze[y][x].visited)
         {
             maze_stack.push_back(maze[y][x]);
