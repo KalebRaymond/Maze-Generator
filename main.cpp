@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include "square.h"
+#include <cmath>
 
 void printMaze(Square maze[4][4])
 {
@@ -50,8 +51,15 @@ int main()
     //Maze coordinates
     int x = 0;
     int y = 0;
-    /*do{
-        int direction = rand() % 4;
+
+    //Iterative solution
+    do{
+        int direction = -1;
+
+        while(!(x == 0 && direction == 1) && !(x == 3 && direction == 2) && !(y == 0 && direction == 0) && !(y == 3 && direction == 3))
+        {
+            direction = rand() % 4;
+        }
 
         switch(direction)
         {
@@ -69,10 +77,14 @@ int main()
                 break;
         }
 
-        //Shouldn't this be recursive? And shouldn't revisiting grid spaces be allowed? Wth am I doing?
         if(!maze[y][x].visited)
         {
             maze_stack.push_back(maze[y][x]);
+            //Erase wall of visited new cell
+            maze[y][x].walls[direction] = false;
+            //Erase corresponding wall of previous cell
+            maze_stack[maze_stack.size() - 2].walls[std::abs(direction - 3)] = false;
+
             maze[y][x].visited = true;
         }
         else if(x == y && x == 0)
@@ -85,7 +97,7 @@ int main()
         }
 
 
-    } while(maze_stack.size() > 1);*/
+    } while(maze_stack.size() > 1);
 
     printMaze(maze);
 
