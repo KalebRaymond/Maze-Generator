@@ -41,6 +41,14 @@ void printMaze(Square maze[4][4])
 int main()
 {
     Square maze[4][4];
+    for(int i = 0; i < 4; i++)
+    {
+        for(int j = 0; j < 4; j++)
+        {
+            maze[i][j].y = i;
+            maze[i][j].x = j;
+        }
+    }
 
     srand(time(NULL));
 
@@ -53,9 +61,19 @@ int main()
     int y = 0;
 
     //Iterative solution
+    //I feel like I have all the pieces of the puzzle, just not in the right places
     do{
-        int direction = -1;
+        int visit_count = 0;
+        if(maze[y + 1][x].visited == true && maze[y - 1][x].visited == true && maze[y][x + 1].visited == true && maze[y][x - 1].visited == true)
+        {
 
+            maze_stack.erase(maze_stack.end() - 1, maze_stack.end());
+            y = maze_stack[maze_stack.size()].y;
+            x = maze_stack[maze_stack.size()].x;
+            continue;
+        }
+
+        int direction = -1;
         while(!(x == 0 && direction == 1) && !(x == 3 && direction == 2) && !(y == 0 && direction == 0) && !(y == 3 && direction == 3))
         {
             direction = rand() % 4;
@@ -85,7 +103,7 @@ int main()
             //Erase wall of visited new cell
             maze[y][x].walls[direction] = false;
             //Erase corresponding wall of previous cell
-            maze_stack[maze_stack.size() - 2].walls[std::abs(direction - 3)] = false;
+            maze_stack[maze_stack.size() - 1].walls[std::abs(direction - 3)] = false;
 
             maze[y][x].visited = true;
         }
@@ -95,7 +113,7 @@ int main()
         }
         else
         {
-            maze_stack.erase(maze_stack.end());
+            maze_stack.erase(maze_stack.end() - 1, maze_stack.end());
         }
 
 
