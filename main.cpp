@@ -62,11 +62,17 @@ int main()
 
     //Iterative solution
     //I feel like I have all the pieces of the puzzle, just not in the right places
+    //There's a problem with accessing the previous cell's visited state
     do{
-        int visit_count = 0;
-        if(maze[y + 1][x].visited == true && maze[y - 1][x].visited == true && maze[y][x + 1].visited == true && maze[y][x - 1].visited == true)
-        {
+        std::cout << "[" << maze_stack.size() << "]";
 
+        //Check if all adjacent cells have been visited.
+        if((y != 3 && maze[y + 1][x].visited == true )
+            && (y != 0 && maze[y - 1][x].visited == true)
+            && (x != 3 && maze[y][x + 1].visited == true)
+            && (x != 0 && maze[y][x - 1].visited == true))
+        {
+            std::cout << "b";
             maze_stack.erase(maze_stack.end() - 1, maze_stack.end());
             y = maze_stack[maze_stack.size()].y;
             x = maze_stack[maze_stack.size()].x;
@@ -113,9 +119,13 @@ int main()
         }
         else
         {
+            //Necessary? I pretty much did this already
             maze_stack.erase(maze_stack.end() - 1, maze_stack.end());
+            y = maze_stack[maze_stack.size()].y;
+            x = maze_stack[maze_stack.size()].x;
         }
 
+        std::cout << maze_stack[maze_stack.size() - 1].visited << " ";
 
     } while(maze_stack.size() > 1);
 
