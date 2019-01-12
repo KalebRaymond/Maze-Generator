@@ -54,6 +54,7 @@ int main()
 
     //Start at (0, 0) for simplicity
     std::vector<Square> maze_stack;
+    maze[0][0].visited = true;
     maze_stack.push_back(maze[0][0]);
 
     //Maze coordinates
@@ -62,7 +63,7 @@ int main()
 
     //Iterative solution
     //I feel like I have all the pieces of the puzzle, just not in the right places
-    //There's a problem with accessing the previous cell's visited state
+    //Have to alter the visited member before pushing to end of vector... so vector pushes back a whole new object? sounds like a lot of memory
     do{
         std::cout << "[" << maze_stack.size() << "]";
 
@@ -72,10 +73,9 @@ int main()
             && (x != 3 && maze[y][x + 1].visited == true)
             && (x != 0 && maze[y][x - 1].visited == true))
         {
-            std::cout << "b";
             maze_stack.erase(maze_stack.end() - 1, maze_stack.end());
-            y = maze_stack[maze_stack.size()].y;
-            x = maze_stack[maze_stack.size()].x;
+            y = maze_stack[maze_stack.size() - 1].y;
+            x = maze_stack[maze_stack.size() - 1].x;
             continue;
         }
 
@@ -83,8 +83,10 @@ int main()
         while(!(x == 0 && direction == 1) && !(x == 3 && direction == 2) && !(y == 0 && direction == 0) && !(y == 3 && direction == 3))
         {
             direction = rand() % 4;
+            std::cout << "{" << direction << "}";
         }
 
+        //MAJOR PROBLEM: program seems to only go out of bounds; at [0][0] direction should come out 0 or 2 but rather comes out 1 or 3
         switch(direction)
         {
             case 0: //Up
@@ -105,24 +107,17 @@ int main()
         //if all adjacent cells have been visited
         if(!maze[y][x].visited)
         {
-            maze_stack.push_back(maze[y][x]);
-            //Erase wall of visited new cell
-            maze[y][x].walls[direction] = false;
-            //Erase corresponding wall of previous cell
-            maze_stack[maze_stack.size() - 1].walls[std::abs(direction - 3)] = false;
-
+            //Mark new cell as visited and erase wall
             maze[y][x].visited = true;
+            maze[y][x].walls[direction] = false;
+            maze_stack.push_back(maze[y][x]);
+
+            //Erase corresponding wall of previous cell - potential problem
+            maze_stack[maze_stack.size() - 2].walls[std::abs(direction - 3)] = false;
         }
-        else if(x == y && x == 0)
+        else /*if(x == y && x == 0)*/
         {
             break;
-        }
-        else
-        {
-            //Necessary? I pretty much did this already
-            maze_stack.erase(maze_stack.end() - 1, maze_stack.end());
-            y = maze_stack[maze_stack.size()].y;
-            x = maze_stack[maze_stack.size()].x;
         }
 
         std::cout << maze_stack[maze_stack.size() - 1].visited << " ";
