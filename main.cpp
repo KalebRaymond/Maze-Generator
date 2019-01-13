@@ -7,7 +7,7 @@
 
 void printMaze(Square maze[4][4])
 {
-    std::cout << " _ _ _ _\n";
+    std::cout << "\n _ _ _ _\n";
 
     for(int i = 0; i < 4; i++)
     {
@@ -79,14 +79,14 @@ int main()
             continue;
         }
 
-        int direction = -1;
-        while(!(x == 0 && direction == 1) && !(x == 3 && direction == 2) && !(y == 0 && direction == 0) && !(y == 3 && direction == 3))
-        {
-            direction = rand() % 4;
-            std::cout << "{" << direction << "}";
-        }
+        std::vector<int> directions;
+        if(x != 0) {directions.push_back(1); }
+        if(x != 3) {directions.push_back(3); }
+        if(y != 0) {directions.push_back(0); }
+        if(y != 3) {directions.push_back(2); }
+        int direction = directions[rand() % directions.size()];
+        std::cout << "{" << direction << "}";
 
-        //MAJOR PROBLEM: program seems to only go out of bounds; at [0][0] direction should come out 0 or 2 but rather comes out 1 or 3
         switch(direction)
         {
             case 0: //Up
