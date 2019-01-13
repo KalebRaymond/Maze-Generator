@@ -67,11 +67,14 @@ int main()
     do{
         std::cout << "[" << maze_stack.size() << "]";
 
-        //Check if all adjacent cells have been visited.
-        if((y != 3 && maze[y + 1][x].visited == true )
-            && (y != 0 && maze[y - 1][x].visited == true)
-            && (x != 3 && maze[y][x + 1].visited == true)
-            && (x != 0 && maze[y][x - 1].visited == true))
+        std::vector<int> directions = {};
+        if(x != 0 && !maze[y][x - 1].visited) {directions.push_back(1); }
+        if(x != 3 && !maze[y][x + 1].visited) {directions.push_back(3); }
+        if(y != 0 && !maze[y - 1][x].visited) {directions.push_back(0); }
+        if(y != 3 && !maze[y + 1][x].visited) {directions.push_back(2); }
+
+        //All adjacent cells have been visited
+        if(directions.size() == 0)
         {
             maze_stack.erase(maze_stack.end() - 1, maze_stack.end());
             y = maze_stack[maze_stack.size() - 1].y;
@@ -79,11 +82,6 @@ int main()
             continue;
         }
 
-        std::vector<int> directions;
-        if(x != 0) {directions.push_back(1); }
-        if(x != 3) {directions.push_back(3); }
-        if(y != 0) {directions.push_back(0); }
-        if(y != 3) {directions.push_back(2); }
         int direction = directions[rand() % directions.size()];
         std::cout << "{" << direction << "}";
 
@@ -103,8 +101,6 @@ int main()
                 break;
         }
 
-        //This whole thing needs to be in a while loop or seomthing. If an adjacent cell is already visited, we need to pick another. Only back up
-        //if all adjacent cells have been visited
         if(!maze[y][x].visited)
         {
             //Mark new cell as visited and erase wall
@@ -117,12 +113,13 @@ int main()
         }
         else /*if(x == y && x == 0)*/
         {
+            std::cout << "END";
             break;
         }
 
         std::cout << maze_stack[maze_stack.size() - 1].visited << " ";
 
-    } while(maze_stack.size() > 1);
+    } while(true);
 
     printMaze(maze);
 
