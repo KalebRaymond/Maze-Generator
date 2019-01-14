@@ -75,10 +75,12 @@ int main()
         //All adjacent cells have been visited
         if(directions.size() == 0)
         {
+            //All cells in maze have been visited
             if(maze_stack.size() == 1)
             {
                 break;
             }
+            //Find new cells
             else
             {
                 maze_stack.erase(maze_stack.end() - 1, maze_stack.end());
@@ -109,14 +111,14 @@ int main()
 
         //Mark new cell as visited and erase wall
         maze[y][x].visited = true;
-        maze[y][x].walls[direction] = false;
+        maze[y][x].walls[std::abs(direction - 3)] = false;
         maze_stack.push_back(maze[y][x]);
 
         //Erase corresponding wall of previous cell
         //This code is excessive and unsightly - there must be a better way
         int previous_y = maze_stack[maze_stack.size() - 2].y;
         int previous_x = maze_stack[maze_stack.size() - 2].x;
-        maze[previous_y][previous_x].walls[std::abs(direction - 3)] = false;
+        maze[previous_y][previous_x].walls[direction] = false;
         maze_stack[maze_stack.size() - 2] = maze[previous_y][previous_x];
 
         std::cout << maze_stack[maze_stack.size() - 1].visited << " ";
