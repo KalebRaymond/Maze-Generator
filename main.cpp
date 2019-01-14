@@ -62,24 +62,30 @@ int main()
     int y = 0;
 
     //Iterative solution
-    //I feel like I have all the pieces of the puzzle, just not in the right places
     //Have to alter the visited member before pushing to end of vector... so vector pushes back a whole new object? sounds like a lot of memory
     do{
         std::cout << "[" << maze_stack.size() << "]";
 
         std::vector<int> directions = {};
         if(x != 0 && !maze[y][x - 1].visited) {directions.push_back(1); }
-        if(x != 3 && !maze[y][x + 1].visited) {directions.push_back(3); }
+        if(x != 3 && !maze[y][x + 1].visited) {directions.push_back(2); }
         if(y != 0 && !maze[y - 1][x].visited) {directions.push_back(0); }
-        if(y != 3 && !maze[y + 1][x].visited) {directions.push_back(2); }
+        if(y != 3 && !maze[y + 1][x].visited) {directions.push_back(3); }
 
         //All adjacent cells have been visited
         if(directions.size() == 0)
         {
-            maze_stack.erase(maze_stack.end() - 1, maze_stack.end());
-            y = maze_stack[maze_stack.size() - 1].y;
-            x = maze_stack[maze_stack.size() - 1].x;
-            continue;
+            if(maze_stack.size() == 1)
+            {
+                break;
+            }
+            else
+            {
+                maze_stack.erase(maze_stack.end() - 1, maze_stack.end());
+                y = maze_stack[maze_stack.size() - 1].y;
+                x = maze_stack[maze_stack.size() - 1].x;
+                continue;
+            }
         }
 
         int direction = directions[rand() % directions.size()];
@@ -101,21 +107,17 @@ int main()
                 break;
         }
 
-        if(!maze[y][x].visited)
-        {
-            //Mark new cell as visited and erase wall
-            maze[y][x].visited = true;
-            maze[y][x].walls[direction] = false;
-            maze_stack.push_back(maze[y][x]);
+        //Mark new cell as visited and erase wall
+        maze[y][x].visited = true;
+        maze[y][x].walls[direction] = false;
+        maze_stack.push_back(maze[y][x]);
 
-            //Erase corresponding wall of previous cell - potential problem
-            maze_stack[maze_stack.size() - 2].walls[std::abs(direction - 3)] = false;
-        }
-        else /*if(x == y && x == 0)*/
-        {
-            std::cout << "END";
-            break;
-        }
+        //Erase corresponding wall of previous cell
+        //This code is excessive and unsightly - there must be a better way
+        int previous_y = maze_stack[maze_stack.size() - 2].y;
+        int previous_x = maze_stack[maze_stack.size() - 2].x;
+        maze[previous_y][previous_x].walls[std::abs(direction - 3)] = false;
+        maze_stack[maze_stack.size() - 2] = maze[previous_y][previous_x];
 
         std::cout << maze_stack[maze_stack.size() - 1].visited << " ";
 
